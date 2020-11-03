@@ -52,14 +52,14 @@ scrape_configs:
 - job_name: 'prometheus'
   scrape_interval: 5s
   static_configs:
-  - targets: ['localhost:9090']  
+  - targets: ['localhost:9090']
 '''
 
 prometheus_config = PrometheusBuilder(kubragen=kg, options=PrometheusOptions({
     'namespace': OptionRoot('namespaces.mon'),
     'basename': 'myprometheus',
     'config': {
-        'prometheus_config': LiteralStr(prometheus_config_file),
+        'prometheus_config': prometheus_config_file,
     },
     'kubernetes': {
         'volumes': {

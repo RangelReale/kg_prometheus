@@ -9,6 +9,11 @@ a [Prometheus](https://prometheus.io/) server in Kubernetes.
 [KubraGen](https://github.com/RangelReale/kubragen) is a Kubernetes YAML generator library that makes it possible to generate
 configurations using the full power of the Python programming language.
 
+* Website: https://github.com/RangelReale/kg_prometheus
+* Repository: https://github.com/RangelReale/kg_prometheus.git
+* Documentation: https://kg_prometheus.readthedocs.org/
+* PyPI: https://pypi.python.org/pypi/kg_prometheus
+
 ## Example
 
 ```python

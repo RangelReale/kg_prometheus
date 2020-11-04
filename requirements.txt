@@ -1,1 +1,1 @@
-kubragen>=0.7.3
+kubragen>=0.7.4

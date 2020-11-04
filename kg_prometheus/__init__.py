@@ -1,8 +1,12 @@
 from .builder import (
-    PrometheusBuilder
+    PrometheusBuilder,
 )
 from .option import (
-    PrometheusOptions
+    PrometheusOptions,
+)
+from .configfile import (
+    PrometheusConfigFileOptions,
+    PrometheusConfigFile,
 )
 
 __version__ = "0.7.1"
@@ -10,4 +14,6 @@ __version__ = "0.7.1"
 __all__ = [
     'PrometheusBuilder',
     'PrometheusOptions',
+    'PrometheusConfigFileOptions',
+    'PrometheusConfigFile',
 ]

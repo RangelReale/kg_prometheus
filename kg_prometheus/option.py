@@ -20,14 +20,14 @@ class PrometheusOptions(Options):
         * - basename
           - object names prefix
           - str
-          - ```rabbitmq```
+          - ```prometheus```
         * - namespace
           - namespace
           - str
-          - ```rabbitmq```
+          - ```prometheus```
         * - config |rarr| prometheus_config
           - prometheus.yml file
-          - :class:`kubragen.configfile.ConfigFile`
+          - str, :class:`kubragen.configfile.ConfigFile`
           - :class:`kg_prometheus.PrometheusConfigFile`
         * - config |rarr| service_port
           - service port
@@ -54,7 +54,7 @@ class PrometheusOptions(Options):
           - str
           - ```debian:<version>```
         * - container |rarr| prometheus
-          - rabbitmq container image
+          - prometheus container image
           - str
           - ```prom/prometheus:<version>```
         * - kubernetes |rarr| volumes |rarr| data

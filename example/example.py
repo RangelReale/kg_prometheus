@@ -7,7 +7,7 @@ from kubragen.output import OutputProject, OD_FileTemplate, OutputFile_Kubernete
     OutputDriver_Print
 from kubragen.provider import Provider
 
-from kg_prometheus import PrometheusBuilder, PrometheusOptions
+from kg_prometheus import PrometheusBuilder, PrometheusOptions, PrometheusConfigFile, PrometheusConfigFileOptions
 
 kg = KubraGen(provider=Provider(PROVIDER_GOOGLE, PROVIDERSVC_GOOGLE_GKE), options=Options({
     'namespaces': {
@@ -45,14 +45,23 @@ shell_script.append(f'kubectl config set-context --current --namespace=app-monit
 #
 # SETUP: prometheus
 #
-prometheus_config_file = '''global:
-  scrape_interval:     1m
-scrape_configs:
-- job_name: 'prometheus'
-  scrape_interval: 5s
-  static_configs:
-  - targets: ['localhost:9090']
-'''
+prometheus_config_file = PrometheusConfigFile(options=PrometheusConfigFileOptions({
+    'config': {
+        'extra_config': {
+            'global': {
+                'scrape_interval': '1m',
+            }
+        },
+    },
+    'scrape': {
+        'prometheus': {
+            'enabled': True,
+            'extra_config': {
+                'scrape_interval': '15s',
+            },
+        }
+    }
+}))
 
 prometheus_config = PrometheusBuilder(kubragen=kg, options=PrometheusOptions({
     'namespace': OptionRoot('namespaces.mon'),

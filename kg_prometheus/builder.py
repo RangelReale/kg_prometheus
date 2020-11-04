@@ -16,9 +16,9 @@ from .option import PrometheusOptions
 
 class PrometheusBuilder(Builder):
     """
-    RabbitMQ builder.
+    Prometheus builder.
 
-    Based on `rabbitmq/diy-kubernetes-examples <https://github.com/rabbitmq/diy-kubernetes-examples>`_.
+    Based on `prometheus-community/helm-charts <https://github.com/prometheus-community/helm-charts>`_.
 
     .. list-table::
         :header-rows: 1

@@ -1,18 +1,81 @@
-from typing import List, Optional, Sequence, Any
+from typing import List, Optional
 
 from kubragen import KubraGen
 from kubragen.builder import Builder
 from kubragen.data import ValueData
 from kubragen.exception import InvalidParamError, InvalidNameError
 from kubragen.helper import LiteralStr
-from kubragen.kdata import IsKData
 from kubragen.kdatahelper import KDataHelper_Volume
 from kubragen.object import ObjectItem, Object
 from kubragen.types import TBuild, TBuildItem
+
 from .option import PrometheusOptions
 
 
 class PrometheusBuilder(Builder):
+    """
+    RabbitMQ builder.
+
+    Based on `rabbitmq/diy-kubernetes-examples <https://github.com/rabbitmq/diy-kubernetes-examples>`_.
+
+    .. list-table::
+        :header-rows: 1
+
+        * - build
+          - description
+        * - BUILD_ACCESSCONTROL
+          - creates service account, roles, and roles bindings
+        * - BUILD_CONFIG
+          - creates ConfigMap
+        * - BUILD_SERVICE
+          - creates StatefulSet and Services
+
+    .. list-table::
+        :header-rows: 1
+
+        * - build item
+          - description
+        * - BUILDITEM_SERVICE_ACCOUNT
+          - ServiceAccount
+        * - BUILDBUILDITEM_CLUSTER_ROLEITEM_ROLE
+          - ClusterRole
+        * - BUILDITEM_CLUSTER_ROLE_BINDING
+          - ClusterRoleBinding
+        * - BUILDITEM_CONFIG
+          - ConfigMap
+        * - BUILDITEM_STATEFULSET
+          - StatefulSet
+        * - BUILDITEM_SERVICE
+          - Service
+
+    .. list-table::
+        :header-rows: 1
+
+        * - object name
+          - description
+          - default value
+        * - config
+          - ConfigMap
+          - ```<basename>-config```
+        * - service
+          - Service
+          - ```<basename>```
+        * - service-account
+          - ServiceAccount
+          - ```<basename>```
+        * - cluster-role
+          - ClusterRole
+          - ```<basename>```
+        * - cluster-role-binding
+          - ClusterRoleBinding
+          - ```<basename>```
+        * - statefulset
+          - StatefulSet
+          - ```<basename>```
+        * - pod-label-all
+          - label *app* to be used by selection
+          - ```<basename>```
+    """
     options: PrometheusOptions
     _namespace: str
 

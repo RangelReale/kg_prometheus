@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from kubragen import KubraGen
 from kubragen.builder import Builder
+from kubragen.configfile import ConfigFileRenderMulti, ConfigFileRender_RawStr, ConfigFileRender_Yaml
 from kubragen.data import ValueData
 from kubragen.exception import InvalidParamError, InvalidNameError
 from kubragen.helper import LiteralStr
@@ -9,6 +10,7 @@ from kubragen.kdatahelper import KDataHelper_Volume
 from kubragen.object import ObjectItem, Object
 from kubragen.types import TBuild, TBuildItem
 
+from .configfile import PrometheusConfigFile
 from .option import PrometheusOptions
 
 
@@ -77,6 +79,7 @@ class PrometheusBuilder(Builder):
           - ```<basename>```
     """
     options: PrometheusOptions
+    configfile: Optional[str]
     _namespace: str
 
     SOURCE_NAME = 'kg_prometheus'
@@ -97,6 +100,7 @@ class PrometheusBuilder(Builder):
         if options is None:
             options = PrometheusOptions()
         self.options = options
+        self.configfile = None
 
         self._namespace = self.option_get('namespace')
 
@@ -133,6 +137,21 @@ class PrometheusBuilder(Builder):
 
     def option_get(self, name: str):
         return self.kubragen.option_root_get(self.options, name)
+
+    def configfile_get(self) -> str:
+        if self.configfile is None:
+            configfile = self.option_get('config.prometheus_config')
+            if configfile is None:
+                configfile = PrometheusConfigFile()
+            if isinstance(configfile, str):
+                self.configfile = configfile
+            else:
+                configfilerender = ConfigFileRenderMulti([
+                    ConfigFileRender_Yaml(),
+                    ConfigFileRender_RawStr()
+                ])
+                self.configfile = configfilerender.render(configfile.get_value(self))
+        return self.configfile
 
     def basename(self, suffix: str = ''):
         return '{}{}'.format(self.option_get('basename'), suffix)
@@ -249,8 +268,8 @@ class PrometheusBuilder(Builder):
                     'namespace': self.namespace(),
                 },
                 'data': {
-                    'prometheus.yml': LiteralStr(self.option_get('config.prometheus_config'))
-                }
+                    'prometheus.yml': LiteralStr(self.configfile_get()),
+                },
             }, name=self.BUILDITEM_CONFIG, source=self.SOURCE_NAME, instance=self.basename())
         ]
         return ret

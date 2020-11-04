@@ -76,7 +76,7 @@ class PrometheusOptions(Options):
             'basename': OptionDef(required=True, default_value='prometheus', allowed_types=[str]),
             'namespace': OptionDef(required=True, default_value='prometheus', allowed_types=[str]),
             'config': {
-                'prometheus_config': OptionDef(required=True, allowed_types=[ConfigFile]),
+                'prometheus_config': OptionDef(required=True, allowed_types=[str, ConfigFile]),
                 'service_port': OptionDef(required=True, default_value=9090, allowed_types=[int]),
                 'authorization': {
                     'serviceaccount_create': OptionDef(required=True, default_value=True, allowed_types=[bool]),

@@ -372,7 +372,7 @@ class PrometheusBuilder(Builder):
                             },
                             KDataHelper_Volume.info(base_value={
                                 'name': 'prometheus-data-volume',
-                            }, kdata=self.option_get('kubernetes.volumes.data')),
+                            }, value=self.option_get('kubernetes.volumes.data')),
                         ]
                     }
                 }

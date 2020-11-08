@@ -125,7 +125,7 @@ class PrometheusBuilder(Builder):
         else:
             rolebinding_name = None
 
-        self.object_names_update({
+        self.object_names_init({
             'config': self.basename('-config'),
             'service': self.basename(),
             'service-account': serviceaccount_name,

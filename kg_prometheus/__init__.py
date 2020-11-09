@@ -8,6 +8,9 @@ from .configfile import (
     PrometheusConfigFileOptions,
     PrometheusConfigFile,
 )
+from .configfileext import (
+    PrometheusConfigFileExt_Kubernetes,
+)
 
 __version__ = "0.7.5"
 
@@ -16,4 +19,5 @@ __all__ = [
     'PrometheusOptions',
     'PrometheusConfigFileOptions',
     'PrometheusConfigFile',
+    'PrometheusConfigFileExt_Kubernetes',
 ]

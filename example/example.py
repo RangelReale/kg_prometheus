@@ -7,7 +7,8 @@ from kubragen.output import OutputProject, OD_FileTemplate, OutputFile_Kubernete
     OutputDriver_Print
 from kubragen.provider import Provider
 
-from kg_prometheus import PrometheusBuilder, PrometheusOptions, PrometheusConfigFile, PrometheusConfigFileOptions
+from kg_prometheus import PrometheusBuilder, PrometheusOptions, PrometheusConfigFile, PrometheusConfigFileOptions, \
+    PrometheusConfigFileExt_Kubernetes
 
 kg = KubraGen(provider=Provider(PROVIDER_GOOGLE, PROVIDERSVC_GOOGLE_GKE), options=Options({
     'namespaces': {
@@ -47,7 +48,7 @@ shell_script.append(f'kubectl config set-context --current --namespace=app-monit
 #
 prometheus_config_file = PrometheusConfigFile(options=PrometheusConfigFileOptions({
     'config': {
-        'extra_config': {
+        'merge_config': {
             'global': {
                 'scrape_interval': '1m',
             }
@@ -61,7 +62,9 @@ prometheus_config_file = PrometheusConfigFile(options=PrometheusConfigFileOption
             },
         }
     }
-}))
+}), extensions=[
+    PrometheusConfigFileExt_Kubernetes(),
+])
 
 prometheus_config = PrometheusBuilder(kubragen=kg, options=PrometheusOptions({
     'namespace': OptionRoot('namespaces.mon'),

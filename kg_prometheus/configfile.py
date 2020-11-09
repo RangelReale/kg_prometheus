@@ -1,6 +1,7 @@
-from typing import Any, Optional, Mapping
+from typing import Any, Optional, Mapping, Sequence
 
-from kubragen.configfile import ConfigFile, ConfigFileOutput, ConfigFileOutput_Dict
+from kubragen.configfile import ConfigFile, ConfigFileOutput, ConfigFileOutput_Dict, ConfigFile_Extend, \
+    ConfigFileExtensionData, ConfigFileExtension
 from kubragen.helper import QuotedStr
 from kubragen.merger import Merger
 from kubragen.option import OptionDef
@@ -43,7 +44,7 @@ class PrometheusConfigFileOptions(Options):
         """
         return {
             'config': {
-                'extra_config': OptionDef(default_value={}, allowed_types=[Mapping]),
+                'merge_config': OptionDef(default_value={}, allowed_types=[Mapping]),
             },
             'scrape': {
                 'prometheus': {
@@ -55,13 +56,15 @@ class PrometheusConfigFileOptions(Options):
         }
 
 
-class PrometheusConfigFile(ConfigFile):
+class PrometheusConfigFile(ConfigFile_Extend):
     """
     Prometheus main configuration file in YAML format.
     """
     options: PrometheusConfigFileOptions
 
-    def __init__(self, options: Optional[PrometheusConfigFileOptions] = None):
+    def __init__(self, options: Optional[PrometheusConfigFileOptions] = None,
+                 extensions: Optional[Sequence[ConfigFileExtension]] = None):
+        super().__init__(extensions)
         if options is None:
             options = PrometheusConfigFileOptions()
         self.options = options
@@ -69,11 +72,11 @@ class PrometheusConfigFile(ConfigFile):
     def option_get(self, name: str):
         return option_root_get(self.options, name)
 
-    def get_value(self, options: OptionGetter) -> ConfigFileOutput:
-        ret = {}
+    def init_value(self, options: OptionGetter) -> ConfigFileExtensionData:
+        ret = ConfigFileExtensionData({})
 
         if self.option_get('scrape.prometheus.enabled'):
-            Merger.merge(ret, {
+            Merger.merge(ret.data, {
                 'scrape_configs': [Merger.merge({
                     'job_name': QuotedStr(self.option_get('scrape.prometheus.job_name')),
                     'static_configs': [{
@@ -84,8 +87,9 @@ class PrometheusConfigFile(ConfigFile):
                 }, self.option_get('scrape.prometheus.extra_config'))]
             })
 
-        extra_config = self.option_get('config.extra_config')
-        if extra_config is not None:
-            Merger.merge(ret, extra_config)
+        return ret
 
-        return ConfigFileOutput_Dict(ret)
+    def finish_value(self, options: OptionGetter, data: ConfigFileExtensionData) -> ConfigFileOutput:
+        if self.option_get('config.merge_config') is not None:
+            Merger.merge(data.data, self.option_get('config.merge_config'))
+        return ConfigFileOutput_Dict(data.data)

@@ -28,7 +28,7 @@ class PrometheusConfigFileExt_Kubernetes(ConfigFileExtension):
             'scheme': 'https',
             'tls_config': {
                 'ca_file': '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
-                'insecure_skip_verify': 'true' if self.insecure_skip_verify else 'false',
+                'insecure_skip_verify': self.insecure_skip_verify,
             },
             'bearer_token_file': '/var/run/secrets/kubernetes.io/serviceaccount/token',
             'relabel_configs': [{
@@ -44,7 +44,7 @@ class PrometheusConfigFileExt_Kubernetes(ConfigFileExtension):
             'scheme': 'https',
             'tls_config': {
                 'ca_file': '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
-                'insecure_skip_verify': 'true' if self.insecure_skip_verify else 'false',
+                'insecure_skip_verify': self.insecure_skip_verify,
             },
             'bearer_token_file': '/var/run/secrets/kubernetes.io/serviceaccount/token',
             'kubernetes_sd_configs': [{
@@ -109,7 +109,7 @@ class PrometheusConfigFileExt_Kubernetes(ConfigFileExtension):
             'scheme': 'https',
             'tls_config': {
                 'ca_file': '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
-                'insecure_skip_verify': 'true' if self.insecure_skip_verify else 'false',
+                'insecure_skip_verify': self.insecure_skip_verify,
             },
             'bearer_token_file': '/var/run/secrets/kubernetes.io/serviceaccount/token',
             'kubernetes_sd_configs': [{

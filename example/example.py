@@ -63,7 +63,7 @@ prometheus_config_file = PrometheusConfigFile(options=PrometheusConfigFileOption
         }
     }
 }), extensions=[
-    PrometheusConfigFileExt_Kubernetes(),
+    PrometheusConfigFileExt_Kubernetes(insecure_skip_verify=True),
 ])
 
 prometheus_config = PrometheusBuilder(kubragen=kg, options=PrometheusOptions({

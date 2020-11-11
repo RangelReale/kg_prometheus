@@ -81,7 +81,7 @@ class PrometheusConfigFile(ConfigFile_Extend):
                     'job_name': QuotedStr(self.option_get('scrape.prometheus.job_name')),
                     'static_configs': [{
                         'targets': [
-                            'localhost:{}'.format(options.option_get('config.service_port')),
+                            'localhost:9090',
                         ]
                     }],
                 }, self.option_get('scrape.prometheus.extra_config'))]

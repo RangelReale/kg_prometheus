@@ -1,4 +1,5 @@
 from kubragen.configfile import ConfigFileExtension, ConfigFile, ConfigFileExtensionData
+from kubragen.data import ValueData
 from kubragen.options import OptionGetter
 
 
@@ -10,12 +11,15 @@ class PrometheusConfigFileExt_Kubernetes(ConfigFileExtension):
     Based on `Driving Manual or Automatic: Docker Hub vs. Helm for Deploying Prometheus on Kubernetes <https://logz.io/blog/manual-automatic-kubernetes-prometheus-docker-hub-helm/>`_.
     """
     insecure_skip_verify: bool
+    scrape_cadvisor: bool
 
-    def __init__(self, insecure_skip_verify: bool = False):
+    def __init__(self, insecure_skip_verify: bool = False, scrape_cadvisor: bool = True):
         """
         :param insecure_skip_verify: set insecure_skip_verify parameter for kubernetes tls_config
+        :param scrape_cadvisor: whether to scrape cadvisor (not available in all kubernetes installations)
         """
         self.insecure_skip_verify = insecure_skip_verify
+        self.scrape_cadvisor = scrape_cadvisor
 
     def process(self, configfile: ConfigFile, data: ConfigFileExtensionData, options: OptionGetter) -> None:
         if 'scrape_configs' not in data.data:
@@ -50,20 +54,12 @@ class PrometheusConfigFileExt_Kubernetes(ConfigFileExtension):
             'kubernetes_sd_configs': [{
                 'role': 'node'
             }],
-            'relabel_configs': [{
-                'action': 'labelmap',
-                'regex': '__meta_kubernetes_node_label_(.+)'
-            },
-            {
-                'target_label': '__address__',
-                'replacement': 'kubernetes.default.svc:443'
-            },
-            {
-                'source_labels': ['__meta_kubernetes_node_name'],
-                'regex': '(.+)',
-                'target_label': '__metrics_path__',
-                'replacement': '/api/v1/nodes/${1}/proxy/metrics'
-            }]
+            'relabel_configs': [
+                {
+                    'action': 'labelmap',
+                    'regex': '__meta_kubernetes_node_label_(.+)'
+                },
+            ]
         },
         {
             'job_name': 'kubernetes-pods',
@@ -104,7 +100,7 @@ class PrometheusConfigFileExt_Kubernetes(ConfigFileExtension):
                 'target_label': 'kubernetes_pod_name'
             }]
         },
-        {
+        ValueData({
             'job_name': 'kubernetes-cadvisor',
             'scheme': 'https',
             'tls_config': {
@@ -130,7 +126,7 @@ class PrometheusConfigFileExt_Kubernetes(ConfigFileExtension):
                 'target_label': '__metrics_path__',
                 'replacement': '/api/v1/nodes/${1}/proxy/metrics/cadvisor'
             }]
-        },
+        }, enabled=self.scrape_cadvisor),
         {
             'job_name': 'kubernetes-service-endpoints',
             'kubernetes_sd_configs': [{

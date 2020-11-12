@@ -76,7 +76,7 @@ prometheus_config_file = PrometheusConfigFile(options=PrometheusConfigFileOption
     'scrape': {
         'prometheus': {
             'enabled': True,
-            'extra_config': {
+            'merge_config': {
                 'scrape_interval': '15s',
             },
         }

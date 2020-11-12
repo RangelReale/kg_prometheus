@@ -19,8 +19,8 @@ class PrometheusConfigFileOptions(Options):
           - description
           - allowed types
           - default value
-        * - config.extra_config
-          - extra config to add to config file
+        * - config.merge_config
+          - extra config to merge to config file
           - Mapping
           - ```{}```
         * - scrape.prometheus.enabled
@@ -31,8 +31,8 @@ class PrometheusConfigFileOptions(Options):
           - prometheus scrape job name
           - str
           - ```prometheus```
-        * - scrape.prometheus.extra_config
-          - extra config to add to prometheus job
+        * - scrape.prometheus.merge_config
+          - extra config to merge to prometheus job
           - Mapping
           - ```{}```
     """
@@ -50,7 +50,7 @@ class PrometheusConfigFileOptions(Options):
                 'prometheus': {
                     'enabled': OptionDef(required=True, default_value=False, allowed_types=[bool]),
                     'job_name': OptionDef(default_value='prometheus', allowed_types=[str]),
-                    'extra_config': OptionDef(default_value={}, allowed_types=[Mapping]),
+                    'merge_config': OptionDef(default_value={}, allowed_types=[Mapping]),
                 }
             },
         }
@@ -84,7 +84,7 @@ class PrometheusConfigFile(ConfigFile_Extend):
                             'localhost:9090',
                         ]
                     }],
-                }, self.option_get('scrape.prometheus.extra_config'))]
+                }, self.option_get('scrape.prometheus.merge_config'))]
             })
 
         return ret
